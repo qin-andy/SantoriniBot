@@ -1,0 +1,7 @@
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\bin\Debug\SantoriniBot.exe.config
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\bin\Debug\SantoriniBot.exe
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\bin\Debug\SantoriniBot.pdb
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\obj\Debug\SantoriniBot.csprojAssemblyReference.cache
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\obj\Debug\SantoriniBot.csproj.CoreCompileInputs.cache
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\obj\Debug\SantoriniBot.exe
+C:\Projects\SantoriniBot\SantoriniBot\SantoriniBot\obj\Debug\SantoriniBot.pdb
