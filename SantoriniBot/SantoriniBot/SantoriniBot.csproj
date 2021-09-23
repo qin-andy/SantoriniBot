@@ -46,8 +46,8 @@
     <Compile Include="Board.cs" />
     <Compile Include="BoardEvaluator.cs" />
     <Compile Include="Directions.cs" />
-    <Compile Include="MinMaxTreeNode.cs" />
     <Compile Include="MoveGenerator.cs" />
+    <Compile Include="Bot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
