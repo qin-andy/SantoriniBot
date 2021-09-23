@@ -13,20 +13,21 @@ namespace SantoriniBot
             List<(Board, Action)> result = new List<(Board, Action)>();
             if (opponentTurn)
             {
-                AddWorkerMoves(board, board.OpponentWorker1, result, true, true);
-                AddWorkerMoves(board, board.OpponentWorker2, result, true, false);
+                result.AddRange(GetHephaestusWorkerMoves(board, board.OpponentWorker1, true, true));
+                result.AddRange(GetHephaestusWorkerMoves(board, board.OpponentWorker2, true, false));
             }
             else
             {
-                AddWorkerMoves(board, board.Worker1, result, false, true);
-                AddWorkerMoves(board, board.Worker2, result, false, false);
+                result.AddRange(GetWorkerMoves(board, board.Worker1, false, true));
+                result.AddRange(GetWorkerMoves(board, board.Worker2, false, false));
             }
             return result;
         }
 
 
-        private static void AddWorkerMoves(Board board, Coord worker, List<(Board, Action)> result, bool isOpponent, bool isWorker1)
+        private static List<(Board, Action)> GetWorkerMoves(Board board, Coord worker, bool isOpponent, bool isWorker1)
         {
+            List<(Board, Action)> result = new List<(Board, Action)>();
             foreach ((int offsetX, int offsetY) in Directions.NeighborOffsets)
             {
                 int moveX = worker.X + offsetX;
@@ -68,102 +69,59 @@ namespace SantoriniBot
                     result.Add((newBoard, action));
                 }
             }
+            return result;
         }
 
-        /*public bool IsOpponent;
-        public Board Board;
-        public Action Action;
-        public List<MoveGenerator> Children;
-
-        public MoveGenerator(Board board, Action action, int depth, bool isOpponent)
+        private static List<(Board, Action)> GetHephaestusWorkerMoves(Board board, Coord worker, bool isOpponent, bool isWorker1)
         {
-            IsOpponent = isOpponent;
-            Board = board;
-            Action = action;
-            Children = new List<MoveGenerator>();
-
-            if (depth > 0 && !BoardEvaluator.IsFinished(board))
+            List<(Board, Action)> result = GetWorkerMoves(board, worker, isOpponent, isWorker1);
+            for (int i = result.Count - 1; i >= 0; i--)
             {
-                if (isOpponent)
-                {
-                    AddWorkerMoves(board.OpponentWorker1, board, isOpponent, true, depth);
-                    AddWorkerMoves(board.OpponentWorker2, board, isOpponent, false, depth);
-                }
-                else
-                {
-                    AddWorkerMoves(board.Worker1, board, isOpponent, true, depth);
-                    AddWorkerMoves(board.Worker2, board, isOpponent, false, depth);
-                }
-            }
-        }
+                result[i].Item2.Type = ActionType.Hephaestus;
 
-        private void AddWorkerMoves(Coord worker, Board board, bool isOpponent, bool isWorker1, int depth)
-        {
-            foreach ((int offsetX, int offsetY) in Directions.NeighborOffsets)
-            {
-                int moveX = worker.X + offsetX;
-                int moveY = worker.Y + offsetY;
-                Coord moveCoord = new Coord { X = moveX, Y = moveY };
-
-                if (!board.ValidCoord(moveCoord) || board.IsOccupied(moveCoord))
+                (Board childBoard, Action childAction) = result[i];
+                if (childBoard.GetElevation(childAction.Build) <= 2)
                 {
-                    continue;
-                }
-                
-                int workerElevation = board.GetElevation(worker);
-                int targetElevation = board.GetElevation(moveX, moveY);
-                if (targetElevation > workerElevation + 1 || targetElevation == Board.MaxHeight)
-                {
-                    continue;
-                }
-
-                foreach ((int buildOffsetX, int buildOffsetY) in Directions.NeighborOffsets)
-                {
-                    int buildX = moveX + buildOffsetX;
-                    int buildY = moveY + buildOffsetY;
-                    Coord buildCoord = new Coord { X = buildX, Y = buildY };
-                    
-                    if (!board.ValidCoord(buildCoord) || board.IsOccupied(buildCoord) || board.GetElevation(buildCoord) == Board.MaxHeight)
+                    Action secondBuildAction = new Action
                     {
-                        continue;
-                    }
-
-                    Action action = new Action
-                    {
-                        IsOpponent = isOpponent,
-                        IsWorker1 = isWorker1,
-                        Move = moveCoord,
-                        Build = buildCoord
+                        Type = ActionType.Hephaestus,
+                        Move = childAction.Move,
+                        Build = childAction.Build,
+                        IsOpponent = childAction.IsOpponent,
+                        IsWorker1 = childAction.IsWorker1,
+                        SecondBuild = true
                     };
-
-                    Board newBoard = new Board(board, action);
-                    Children.Add(new MoveGenerator(newBoard, action, depth - 1, !isOpponent));
+                    Board newBoard = new Board(board, secondBuildAction);
+                    result.Add((newBoard, secondBuildAction));
                 }
             }
+            return result;
         }
 
-        public int ChildCount()
+        private static List<(Board, Action)> GetAtlasWorkerMoves(Board board, Coord worker, bool isOpponent, bool isWorker1)
         {
-            int count = Children.Count;
-            foreach (MoveGenerator child in Children)
+            List<(Board, Action)> result = GetWorkerMoves(board, worker, isOpponent, isWorker1);
+            for (int i = result.Count - 1; i >= 0; i--)
             {
-                count += child.ChildCount();
-            }
-            return count;
-        }
+                result[i].Item2.Type = ActionType.Atlas;
 
-        public int LeafCount()
-        {
-            if (Children == null || Children.Count == 0)
-            {
-                return 1;
+                (Board childBoard, Action childAction) = result[i];
+                if (childBoard.GetElevation(childAction.Build) < Board.MaxHeight)
+                {
+                    Action domeAction = new Action
+                    {
+                        Type = ActionType.Atlas,
+                        Move = childAction.Move,
+                        Build = childAction.Build,
+                        IsOpponent = childAction.IsOpponent,
+                        IsWorker1 = childAction.IsWorker1,
+                        AtlasDome = true
+                    };
+                    Board newBoard = new Board(board, domeAction);
+                    result.Add((newBoard, domeAction));
+                }
             }
-            int sum = 0;
-            foreach (MoveGenerator child in Children)
-            {
-                sum += child.LeafCount();
-            }
-            return sum;
-        }*/
+            return result;
+        }
     }
 }

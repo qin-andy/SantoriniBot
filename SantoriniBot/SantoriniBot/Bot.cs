@@ -16,15 +16,13 @@ namespace SantoriniBot
             Action action = null;
             for (int depth = 5; depth < 10; depth++)
             {
+                Console.WriteLine("Exploring depth: " + depth);
                 Leaves = 0;
-                (score, action) = Minimax(board, 5, Double.NegativeInfinity, Double.PositiveInfinity, false);
-                Console.WriteLine($"Leaves: {Leaves}");
+                (score, action) = Minimax(board, depth, Double.NegativeInfinity, Double.PositiveInfinity, false);
+                Console.WriteLine($"Leaves: {Leaves} " + (action == null));
                 if (Leaves > 100000)
                 {
                     break;
-                } else
-                {
-                    Console.WriteLine($"Deepening: {depth + 1}");
                 }
             }
             return (score, action);
@@ -45,10 +43,15 @@ namespace SantoriniBot
                 int childIndex = 0;
                 List<(Board, Action)> childBoards = 
                     MoveGenerator.GetNextBoards(board, false).OrderByDescending(item => BoardEvaluator.Evaluate(item.Item1)).ToList();
+                if (childBoards.Count == 0)
+                {
+                    return (-1, null);
+                }
                 foreach ((Board childBoard, Action childAction) in childBoards)
                 {
                     (double eval, Action action) = Minimax(childBoard, depth - 1, alpha, beta, true, childIndex);
                     childIndex++;
+
                     if (eval > maxEval)
                     {
                         maxEval = eval;
@@ -68,6 +71,10 @@ namespace SantoriniBot
                 int childIndex = 0;
                 List<(Board, Action)> childBoards = 
                     MoveGenerator.GetNextBoards(board, true).OrderBy(item => BoardEvaluator.Evaluate(item.Item1)).ToList();
+                if (childBoards.Count == 0)
+                {
+                    return (1, null);
+                }
                 foreach ((Board childBoard, Action childAction) in MoveGenerator.GetNextBoards(board, true))
                 {
                     (double eval, Action action) = Minimax(childBoard, depth - 1, alpha, beta, false, childIndex);

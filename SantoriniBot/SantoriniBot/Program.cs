@@ -10,6 +10,7 @@ namespace SantoriniBot
     {
         static void Main(string[] args)
         {
+            /*
             Board board = new Board
             {
                 Worker1 = new Coord { X = 1, Y = 1 },
@@ -25,41 +26,42 @@ namespace SantoriniBot
                     { 0, 0, 0, 0, 0 }
                 }
             };
-
-            /*
-            Board board = new Board
-            {
-                Worker1 = new Coord { X = 0, Y = 2 },
-                Worker2 = new Coord { X = 3, Y = 3 },
-                OpponentWorker1 = new Coord { X = 4, Y = 0 },
-                OpponentWorker2 = new Coord { X = 1, Y = 3 },
-                Cells = new int[,]
-                {
-                    { 0, 0, 1, 0, 0 },
-                    { 1, 1, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0 },
-                    { 2, 0, 0, 0, 0 },
-                    { 2, 0, 0, 0, 0 }
-                }
-            };
             */
 
+            Board board = new Board
+            {
+                Worker1 = new Coord { X = 0, Y = 1 },
+                Worker2 = new Coord { X = 2, Y = 2 },
+                OpponentWorker1 = new Coord { X = 1, Y = 1 },
+                OpponentWorker2 = new Coord { X = 3, Y = 3 },
+                Cells = new int[,]
+                {
+                    { 2, 0, 0, 3, 0 },
+                    { 3, 0, 0, 3, 0 },
+                    { 3, 2, 0, 2, 0 },
+                    { 0, 2, 3, 0, 0 },
+                    { 0, 0, 0, 0, 0 }
+                }
+            };
+
             board.Print();
-            
+
             /*
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
             Console.WriteLine("\n----- Bot's Turn -----\n");
             (double eval, Action action) = Bot.GetAction(board);
+            Console.WriteLine("Bot actoin null " + (action == null));
             board.Update(action);
             board.Print();
             watch.Stop();
             Console.WriteLine($"Time: {watch.ElapsedMilliseconds}ms");
             */
-
+                       
             while (true)
             {
-                PlayerAction(board);
+                Action playerAction = HephaestusAction(board);
+                board.Update(playerAction);
                 board.Print();
 
                 Console.WriteLine("\n----- Bot's Turn -----\n");
@@ -71,10 +73,11 @@ namespace SantoriniBot
                 watch.Stop();
                 Console.WriteLine($"Time: {watch.ElapsedMilliseconds}ms");
             }
+            
             Console.ReadKey();
         }
 
-        private static void PlayerAction(Board board)
+        private static Action PlayerAction(Board board)
         {
             Console.Write("Move worker 1? (y/n): ");
             bool isWorker1 = Console.ReadLine() == "y";
@@ -88,8 +91,7 @@ namespace SantoriniBot
             if (!board.ValidCoord(workerX, workerY))
             {
                 Console.WriteLine("CANNOT MOVE OFF BOARD");
-                PlayerAction(board);
-                return;
+                return PlayerAction(board);
             }
 
             Console.Write("Build (NE,N,NW,W,SW,S,SE,E): ");
@@ -100,19 +102,34 @@ namespace SantoriniBot
             if (!board.ValidCoord(buildX, buildY))
             {
                 Console.WriteLine("CANNOT BUILD OFF BOARD");
-                PlayerAction(board);
-                return;
+                return PlayerAction(board);
             }
 
-            if (isWorker1)
+            return new Action
             {
-                board.OpponentWorker1 = new Coord { X = workerX, Y = workerY };
-            }
-            else
-            {
-                board.OpponentWorker2 = new Coord { X = workerX, Y = workerY };
-            }
-            board.Cells[buildX, buildY] += 1;
+                Move = new Coord { X = workerX, Y = workerY },
+                Build = new Coord { X = buildX, Y = buildY },
+                IsOpponent = true,
+                IsWorker1 = isWorker1
+            };
+        }
+
+        private static Action HephaestusAction(Board board)
+        {
+            Action action = PlayerAction(board);
+            action.Type = ActionType.Hephaestus;
+            Console.WriteLine("Second build (y/n): ");
+            action.SecondBuild = Console.ReadLine() == "y";
+            return action;
+        }
+
+        private static Action AtlasAction(Board board)
+        {
+            Action action = PlayerAction(board);
+            action.Type = ActionType.Atlas;
+            Console.WriteLine("Dome (y/n): ");
+            action.AtlasDome = Console.ReadLine() == "y";
+            return action;
         }
     }
 }

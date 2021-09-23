@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace SantoriniBot
 {
+    enum ActionType { Base, Hephaestus, Atlas };
+
     class Coord
     {
         public int X;
@@ -28,10 +30,14 @@ namespace SantoriniBot
 
     class Action
     {
+        public ActionType Type = ActionType.Base;
         public Coord Move;
         public Coord Build;
         public bool IsOpponent;
         public bool IsWorker1;
+
+        public bool SecondBuild = false;
+        public bool AtlasDome = false;
     }
 
     class Board
@@ -73,7 +79,31 @@ namespace SantoriniBot
 
         public void Update(Action action)
         {
+            if (action.Build == null)
+            {
+                Console.WriteLine("Action build null");
+            }
+            if (Cells == null)
+            {
+                Console.WriteLine("CElls null");
+            }
             Cells[action.Build.X, action.Build.Y] += 1;
+            
+            switch (action.Type)
+            {
+                case ActionType.Hephaestus:
+                    if (action.SecondBuild)
+                    {
+                        Cells[action.Build.X, action.Build.Y] += 1;
+                    }
+                    break;
+                case ActionType.Atlas:
+                    if (action.AtlasDome)
+                    {
+                        Cells[action.Build.X, action.Build.Y] = Board.MaxHeight;
+                    }
+                    break;
+            }
 
             if (action.IsOpponent)
             {
