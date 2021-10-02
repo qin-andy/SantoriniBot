@@ -9,7 +9,7 @@ namespace SantoriniBotMicroservice.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class MoveGeneratorController : ControllerBase
     {
         [HttpGet]
         public int Get()
