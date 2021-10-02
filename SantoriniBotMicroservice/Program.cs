@@ -70,7 +70,7 @@ namespace SantoriniBotMicroservice
             watch.Start();
             Console.WriteLine("\n----- Bot's Turn -----\n");
             (double eval, Action action) = Bot.GetAction(board);
-            Console.WriteLine("Bot actoin null " + (action == null));
+            Console.WriteLine("Bot action null " + (action == null));
             board.Update(action);
             board.Print();
             watch.Stop();

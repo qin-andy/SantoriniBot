@@ -12,9 +12,10 @@ namespace SantoriniBot
 
         public static (double, Action) GetAction(Board board)
         {
+            int depth = 5;
             double score = 0;
             Action action = null;
-            for (int depth = 5; depth < 10; depth++)
+/*            for (int depth = 5; depth < 10; depth++)
             {
                 Console.WriteLine("Exploring depth: " + depth);
                 Leaves = 0;
@@ -24,7 +25,12 @@ namespace SantoriniBot
                 {
                     break;
                 }
-            }
+            }*/
+
+            Console.WriteLine("Exploring depth: " + depth);
+            Leaves = 0;
+            (score, action) = Minimax(board, depth, Double.NegativeInfinity, Double.PositiveInfinity, false);
+            Console.WriteLine($"Leaves: {Leaves} " + (action == null));
             return (score, action);
         }
 

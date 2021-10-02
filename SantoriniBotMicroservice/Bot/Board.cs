@@ -10,8 +10,8 @@ namespace SantoriniBot
 
     class Coord
     {
-        public int X;
-        public int Y;
+        public int X { get; set; }
+        public int Y { get; set; }
 
         public override bool Equals(object other)
         {
@@ -26,18 +26,31 @@ namespace SantoriniBot
         {
             return Y * Board.Size + X;
         }
+
+        public override string ToString()
+        {
+            return $"({X}, {Y})";
+        }
     }
 
     class Action
     {
         public ActionType Type = ActionType.Base;
-        public Coord Move;
-        public Coord Build;
-        public bool IsOpponent;
-        public bool IsWorker1;
+        public Coord Worker { get; set; } = null;
+        public Coord Move { get; set; }
+        public Coord Build { get; set; }
+        public bool IsOpponent { get; set; }
+        public bool IsWorker1 { get; set; }
 
         public bool SecondBuild = false;
         public bool AtlasDome = false;
+
+        public override string ToString()
+        {
+            string s = "Move Coord: " + Move +
+                "\nBuild Coord: " + Build;
+            return s;
+        }
     }
 
     class Board
