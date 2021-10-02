@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SantoriniBot
 {
-    enum ActionType { Base, Hephaestus, Atlas };
+    public enum ActionType { Base, Hephaestus, Atlas };
 
-    class Coord
+    public class Coord
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -33,7 +33,7 @@ namespace SantoriniBot
         }
     }
 
-    class Action
+    public class Action
     {
         public ActionType Type = ActionType.Base;
         public Coord Worker { get; set; } = null;
@@ -53,7 +53,7 @@ namespace SantoriniBot
         }
     }
 
-    class Board
+    public class Board
     {
         public const int Size = 5;
         public const int MaxHeight = 4;
