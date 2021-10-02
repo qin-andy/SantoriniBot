@@ -53,20 +53,18 @@ namespace SantoriniBotMicroservice.Controllers
             {
                 List<int> list = boardData.Cells[i];
                 for (int j = 0; j < 5; j++)
-                    cells[i, j] = list[j];
+                    cells[j, i] = list[j];
             }
 
             Board board = new Board
             {
-                Worker1 = new Coord { X = 0, Y = 1 },
-                Worker2 = new Coord { X = 2, Y = 2 },
-                OpponentWorker1 = new Coord { X = 1, Y = 1 },
-                OpponentWorker2 = new Coord { X = 3, Y = 3 },
+                Worker1 = boardData.Worker1,
+                Worker2 = boardData.Worker2,
+                OpponentWorker1 = boardData.OpponentWorker1,
+                OpponentWorker2 = boardData.OpponentWorker2,
                 Cells = cells
             };
-
-            Console.WriteLine(board.Worker1);
-            Console.WriteLine(board.Worker2);
+            board.Print();
 
             (double eval, SantoriniBot.Action action) = Bot.GetAction(board);
             if (action.IsWorker1)
@@ -92,6 +90,8 @@ namespace SantoriniBotMicroservice.Controllers
                 }
             }
             string json = JsonSerializer.Serialize(action);
+            board.Update(action);
+            board.Print();
             Console.WriteLine(action);
             Console.WriteLine(json);
             return json;

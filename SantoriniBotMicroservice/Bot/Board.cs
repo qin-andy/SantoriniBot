@@ -150,7 +150,7 @@ namespace SantoriniBot
             workerStrings[OpponentWorker1.X, OpponentWorker1.Y] = "A";
             workerStrings[OpponentWorker2.X, OpponentWorker2.Y] = "B";
 
-            for (int y = Size - 1; y >= 0; y--)
+            for (int y = 0; y < Size; y++)
             {
                 string str = "";
                 for (int x = 0; x < Size; x++)
