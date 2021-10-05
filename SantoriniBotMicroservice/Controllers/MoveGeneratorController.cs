@@ -16,37 +16,8 @@ namespace SantoriniBotMicroservice.Controllers
         [HttpPost]
         public string Post(BoardData boardData)
         {
-            /*            Board board = new Board
-                        {
-                            Worker1 = new Coord { X = 0, Y = 1 },
-                            Worker2 = new Coord { X = 2, Y = 2 },
-                            OpponentWorker1 = new Coord { X = 1, Y = 1 },
-                            OpponentWorker2 = new Coord { X = 3, Y = 3 },
-                            Cells = new int[,]
-                            {
-                                { 2, 0, 0, 3, 0 },
-                                { 3, 0, 0, 3, 0 },
-                                { 3, 2, 0, 2, 0 },
-                                { 0, 2, 3, 0, 0 },
-                                { 0, 0, 0, 0, 0 }
-                            }
-                        };
-
-                        {
-                            "Worker1": { "X": 0, "Y": 1 },
-                            "Worker2": { "X": 2, "Y": 2 },
-                            "OpponentWorker1": { "X": 1, "Y": 1 },
-                            "OpponentWorker2": { "X": 3, "Y": 3 },
-                            "Cells": 
-                            [
-                                [ 2, 0, 0, 3, 0 ],
-                                [ 3, 0, 0, 3, 0 ],
-                                [ 3, 2, 0, 2, 0 ],
-                                [ 0, 2, 3, 0, 0 ],
-                                [ 0, 0, 0, 0, 0 ]
-                            ]
-                        }
-             */
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
 
             int[,] cells = new int[5,5];
             for (int i = 0; i < 5; i++)
@@ -94,6 +65,8 @@ namespace SantoriniBotMicroservice.Controllers
             board.Print();
             Console.WriteLine(action);
             Console.WriteLine(json);
+            watch.Stop();
+            Console.WriteLine($"Time: {watch.ElapsedMilliseconds/1000f}s");
             return json;
         }
     }
@@ -106,5 +79,23 @@ namespace SantoriniBotMicroservice.Controllers
         public Coord OpponentWorker2 { get; set; }
         public List<List<int>> Cells { get; set; }
     }
+
+    /* as a json, it should look something like:
+       {
+            "Worker1": { "X": 0, "Y": 1 },
+            "Worker2": { "X": 2, "Y": 2 },
+            "OpponentWorker1": { "X": 1, "Y": 1 },
+            "OpponentWorker2": { "X": 3, "Y": 3 },
+            "Cells": 
+            [
+                [ 2, 0, 0, 3, 0 ],
+                [ 3, 0, 0, 3, 0 ],
+                [ 3, 2, 0, 2, 0 ],
+                [ 0, 2, 3, 0, 0 ],
+                [ 0, 0, 0, 0, 0 ]
+            ]
+        }
+
+    */
 }
 
