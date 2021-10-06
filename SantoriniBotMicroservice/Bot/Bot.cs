@@ -12,7 +12,7 @@ namespace SantoriniBot
 
         public static (double, Action) GetAction(Board board)
         {
-            int depth = 5;
+            int depth = 3;
             double score = 0;
             Action action = null;
 /*           

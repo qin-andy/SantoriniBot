@@ -95,7 +95,6 @@ namespace SantoriniBotMicroservice.Controllers
                 [ 0, 0, 0, 0, 0 ]
             ]
         }
-
     */
 }
 
